@@ -1,7 +1,6 @@
 # Smart Campus Sensor & Room Management API
 
 **Module:** 5COSC022W – Client-Server Architectures  
-**University:** University of Westminster  
 **Technology:** JAX-RS (Jersey 2.41) + Grizzly Embedded Server  
 **Base URL:** `http://localhost:8080/api/v1`
 
@@ -131,7 +130,7 @@ You will see:
 =======================================================
   Smart Campus API — Server Started Successfully!
 =======================================================
-  Base URL   : http://localhost:8080/api/v1
+  Base URL   : http://localhost:8080/
   Rooms      : http://localhost:8080/api/v1/rooms
   Sensors    : http://localhost:8080/api/v1/sensors
 =======================================================
