@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.smartcampus</groupId>
+    <artifactId>smart-campus-api</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Smart Campus Sensor and Room Management API</name>
+    <description>JAX-RS RESTful API for managing campus rooms and sensors</description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Jersey version - the JAX-RS implementation we're using -->
+        <jersey.version>2.41</jersey.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- =====================================================
+             JERSEY CORE - JAX-RS Implementation
+             Jersey is the reference implementation of JAX-RS.
+             This gives us all the @Path, @GET, @POST etc annotations
+             ===================================================== -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- =====================================================
+             GRIZZLY HTTP SERVER
+             Lightweight embedded HTTP server - no need for Tomcat.
+             We can run the app as a plain Java main() method.
+             ===================================================== -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- =====================================================
+             JACKSON JSON PROVIDER
+             Automatically converts Java objects <-> JSON.
+             Required so JAX-RS can serialize/deserialize POJOs.
+             ===================================================== -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- =====================================================
+             JERSEY HK2 INJECTION
+             Dependency injection framework used internally by Jersey.
+             Required for Jersey 2.x to wire components together.
+             ===================================================== -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- =====================================================
+                 MAVEN SHADE PLUGIN
+                 Bundles ALL dependencies into one fat/uber JAR.
+                 This makes deployment simple: java -jar smartcampus.jar
+                 ===================================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <!-- Tell Java which class has the main() entry point -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.smartcampus.Main</mainClass>
+                                </transformer>
+                                <!-- Merge service files so Jersey discovers all providers -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <!-- Suppress warnings about duplicate files from dependencies -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
